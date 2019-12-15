@@ -12,7 +12,7 @@
   "scripts": {
     "start": "parcel src/index.html",
     "dev": "concurrently -r \"npm run watch-ts\" \"npm start\"",
-    "build": "npm run ts && parcel build ./src/index.html --public-url '/'",
+    "build": "yarn ts && parcel build ./src/index.html --public-url '/'",
     "prettier": "prettier --write './src/**/*.{ts,tsx}'",
     "ts": "tsc --noEmit",
     "watch-ts": "tsc --noEmit --watch",
@@ -22,14 +22,16 @@
     "lint": "eslint 'src/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "dependencies": {
-    "firebase": "^7.5.2",
+    "@xstate/react": "^0.8.1",
+    "firebase": "^7.6.0",
     "navi": "^0.13.6",
     "react": "^0.0.0-experimental-b53ea6ca0",
     "react-dom": "^0.0.0-experimental-b53ea6ca0",
     "react-markdown": "^4.2.2",
     "react-mde": "^7.8.0",
     "react-navi": "^0.13.6",
-    "styled-components": "^4.4.1"
+    "styled-components": "^4.4.1",
+    "xstate": "^4.7.3"
   },
   "devDependencies": {
     "@now/node": "^1.2.1",

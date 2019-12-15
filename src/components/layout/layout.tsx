@@ -14,8 +14,6 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
 `
 
 const Menu = styled.div`
@@ -26,7 +24,7 @@ const Menu = styled.div`
 `
 
 interface Props {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const Layout = ({ children }: Props) => {

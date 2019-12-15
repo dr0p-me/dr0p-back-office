@@ -2,7 +2,8 @@ import React, { Suspense } from 'react'
 import { mount, route, lazy } from 'navi'
 import { Router, View, NotFoundBoundary } from 'react-navi'
 
-import Index from './routes/index/index'
+import Index from './routes/index'
+import { FirebaseProvider } from './services/firebase'
 
 import Layout from './components/layout/layout'
 import GlobalStyle from './components/global-style/global-style'
@@ -25,16 +26,18 @@ const routes = mount({
 
 const App = () => {
   return (
-    <Router routes={routes}>
-      <GlobalStyle />
-      <Layout>
-        <NotFoundBoundary render={NotFound}>
-          <Suspense fallback={<Fallback />}>
-            <View />
-          </Suspense>
-        </NotFoundBoundary>
-      </Layout>
-    </Router>
+    <FirebaseProvider>
+      <Router routes={routes}>
+        <GlobalStyle />
+        <Layout>
+          <NotFoundBoundary render={NotFound}>
+            <Suspense fallback={<Fallback />}>
+              <View />
+            </Suspense>
+          </NotFoundBoundary>
+        </Layout>
+      </Router>
+    </FirebaseProvider>
   )
 }
 

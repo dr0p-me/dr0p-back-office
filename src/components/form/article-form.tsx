@@ -1,218 +1,240 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import React, { useState, useCallback } from 'react'
+import { State } from 'xstate'
+// import styled from 'styled-components'
+
 import ReactMde from 'react-mde'
-import 'react-mde/lib/styles/css/react-mde-all.css'
 import ReactMarkdown from 'react-markdown'
+import 'react-mde/lib/styles/css/react-mde-all.css'
 
-import { Article, Track, Category, Artist, Tag } from '../../types'
-
-import articles from '../../../mocks/articles.json'
+// import articles from '../../../mocks/articles.json'
+import { Article } from '../../types'
 import ArrayInput from './array-input'
+import Input from './input'
+
+import {
+  DATE,
+  PATH,
+  TAGS,
+  SLUG,
+  FINAL,
+  TITLE,
+  NUMBER,
+  CONTENT,
+  ARTISTS,
+  CATEGORIES,
+  SOUNDCLOUD,
+  FORM_MACHINE_NEXT,
+  FORM_MACHINE_PREV,
+  FORM_MACHINE_SET_VALUE,
+  FormEvents,
+} from '../../machines/formMachine'
 
 interface Props {
-  article?: Article
+  formContext: State<Article, FormEvents>;
+  dispatch: (obj: FormEvents) => void;
+  save: () => void;
 }
 
-const SubList = ({ data }: { data: Set<any> }) => {
-  const [list, setList] = useState([...data])
-
-  useEffect(() => {
-    setList([...data])
-  }, [data])
-
-  return (
-    <ul>
-      {list.map(el => (
-        <li key={el}>{el}</li>
-      ))}
-    </ul>
-  )
-}
-
-type Step = keyof Article
-
-const initializeState = (state?: Article) => (
-  prop: keyof Article,
-  fallback: any
-) => {
-  if (!state) return fallback
-
-  return state[prop] || fallback
-}
-
-const CreateForm = ({ article = articles[0] }: Props) => {
-  const init = initializeState(article)
-  const [path, setPath] = useState(init('path', ''))
-  const [title, setTitle] = useState(init('title', ''))
-  const [soundcloud, setSoundcloud] = useState(init('soundcloud', ''))
-  const [content, setContent] = useState(init('content', ''))
-  const [date, setDate] = useState(init('date', ''))
-  const [number, setNumber] = useState(init('number', ''))
-  const tagsRef = useRef<any>(null)
-  // const [tags, setTags] = useState<Set<Tag>>(new Set(init('tags', [])))
-  const [tags, setTags] = useState<Tag[]>(init('tags', []))
-  const tracksRef = useRef<any>(null)
-  const [tracks, setTracks] = useState<Track[]>([])
-  const artistsRef = useRef<any>(null)
-  const [artists, setArtists] = useState<Set<Artist>>(
-    new Set(init('artists', []))
-  )
-  const categoriesRef = useRef<any>(null)
-  const [categories, setCategories] = useState<Set<Category>>(
-    new Set(init('categories', []))
-  )
+const ArticleForm = ({ dispatch, formContext, save }: Props) => {
+  // const [formContext, dispatch] = useMachine(formMachine, { context: article })
   const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write')
 
-  const setter = useCallback(
-    (e: React.SyntheticEvent<HTMLInputElement>, fn: (str: string) => void) => {
-      fn(e.currentTarget.value)
+  const onNext = useCallback(
+    () => {
+      dispatch({ type: FORM_MACHINE_NEXT})
     },
-    []
+    [dispatch]
   )
 
-  const arraySetter = useCallback(
-    (e: React.KeyboardEvent, type) => {
-      switch (type) {
-        // case 'tags': {
-        //   if (e.keyCode === 13) {
-        //     setTags(new Set([...tags, tagsRef.current.value]))
-        //     tagsRef.current.value = ''
-        //   }
-        //   break
-        // }
-        case 'artists': {
-          if (e.keyCode === 13) {
-            setArtists(new Set([...artists, artistsRef.current.value]))
-            artistsRef.current.value = ''
-          }
-          break
-        }
-        case 'categories': {
-          if (e.keyCode === 13) {
-            setCategories(new Set([...categories, categoriesRef.current.value]))
-            categoriesRef.current.value = ''
-          }
-          break
-        }
-      }
+  const onPrev = useCallback(
+    () => {
+      dispatch({type:FORM_MACHINE_PREV})
     },
-    [
-      tags,
-      setTags,
-      tracks,
-      setTracks,
-      artists,
-      setArtists,
-      categories,
-      setCategories,
-    ]
+    [dispatch]
+  )
+
+  const onChange = useCallback(
+    (e: React.SyntheticEvent<HTMLInputElement>, type) => {
+      dispatch({
+        type: FORM_MACHINE_SET_VALUE,
+        key: type,
+        payload: e.currentTarget.value,
+      })
+    },
+    [dispatch]
+  )
+
+  const onChangeContent = useCallback(
+    (e: string) => {
+      dispatch({
+        type: FORM_MACHINE_SET_VALUE,
+        key: 'content',
+        payload: e,
+      })
+    },
+    [dispatch]
+  )
+
+  const onChangeArray = useCallback(
+    (value: string[], type: keyof Article) => {
+      dispatch({
+        type: FORM_MACHINE_SET_VALUE,
+        key: type,
+        payload: value,
+      })
+    },
+    [dispatch]
   )
 
   return (
-    <form style={{ marginTop: 24 }}>
-      <div>
-        <label htmlFor="path">url</label>
-        <input
-          type="text"
-          id="path"
-          onChange={e => setter(e, setPath)}
-          value={path}
-        />
-      </div>
-      <div>
-        <label htmlFor="number">number</label>
-        <input
-          type="number"
-          id="number"
-          onChange={e => setter(e, setNumber)}
-          value={number}
-        />
-      </div>
-      <div>
-        <label htmlFor="title">title</label>
-        <input
-          type="text"
-          id="title"
-          onChange={e => setter(e, setTitle)}
-          value={title}
-        />
-      </div>
-      <div>
-        <label htmlFor="soundcloud">soundcloud</label>
-        <input
-          type="text"
-          id="soundcloud"
-          onChange={e => setter(e, setSoundcloud)}
-          value={soundcloud}
-        />
-      </div>
-      <div>
-        <label htmlFor="date">date</label>
-        <input
-          type="text"
-          id="date"
-          onChange={e => setter(e, setDate)}
-          value={date}
-          placeholder="format: YYYY-MM-DD"
-        />
-      </div>
-      <div>
-        <label htmlFor="artists">artists</label>
-        <input
-          ref={artistsRef}
-          type="text"
-          id="artists"
-          onKeyUp={e => arraySetter(e, 'artists')}
-        />
+    <div style={{ flex: 1, width: '100%' }}>
+      {formContext.matches(TITLE) ? (
+        <>
+          <Input
+            htmlFor="title"
+            type="text"
+            label="title"
+            id="title"
+            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
+              onChange(e, 'title')
+            }
+            value={formContext.context.title}
+          />
+          <button onClick={onNext}>next</button>
+        </>
+      ) : null}
+      {formContext.matches(NUMBER) ? (
+        <>
+          <Input
+            htmlFor="number"
+            type="number"
+            label="number"
+            id="number"
+            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
+              onChange(e, 'number')
+            }
+            value={formContext.context.number}
+          />
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
+        </>
+      ) : null}
+      {formContext.matches(DATE) ? (
         <div>
-          <SubList data={artists} />
+          <Input
+            htmlFor="date"
+            type="date"
+            label="date"
+            id="date"
+            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
+              onChange(e, 'date')
+            }
+            value={formContext.context.date}
+          />
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
         </div>
-      </div>
-      <div>
-        <label htmlFor="categories">categories</label>
-        <input
-          ref={categoriesRef}
-          type="text"
-          id="categories"
-          onKeyUp={e => arraySetter(e, 'categories')}
-        />
+      ) : null}
+      {formContext.matches(ARTISTS) ? (
         <div>
-          <SubList data={categories} />
+          <ArrayInput
+            title="artists"
+            id="artists"
+            setNewValue={val => onChangeArray(val, 'artists')}
+            values={formContext.context.artists}
+          />
+
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
         </div>
-      </div>
-      <div>
-        <ArrayInput
-          title="tags"
-          id="tags"
-          setNewValue={setTags}
-          values={tags}
-        />
-      </div>
-      {/* <div>
-        <label htmlFor="tags">tags</label>
-        <input
-          ref={tagsRef}
-          type="text"
-          id="tags"
-          onKeyUp={e => arraySetter(e, 'tags')}
-        />
+      ) : null}
+      {formContext.matches(CATEGORIES) ? (
         <div>
-          <SubList data={tags} />
+          <ArrayInput
+            title="categories"
+            id="categories"
+            setNewValue={val => onChangeArray(val, 'categories')}
+            values={formContext.context.categories}
+          />
+
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
         </div>
-      </div> */}
-      <div>
-        <ReactMde
-          value={content}
-          onChange={setContent}
-          selectedTab={selectedTab}
-          onTabChange={setSelectedTab}
-          generateMarkdownPreview={markdown =>
-            Promise.resolve(<ReactMarkdown source={markdown} />)
-          }
-        />
-      </div>
-    </form>
+      ) : null}
+      {formContext.matches(TAGS) ? (
+        <div>
+          <ArrayInput
+            title="tags"
+            id="tags"
+            setNewValue={val => onChangeArray(val, 'tags')}
+            values={formContext.context.tags}
+          />
+
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
+        </div>
+      ) : null}
+      {formContext.matches(SOUNDCLOUD) ? (
+        <div>
+          <label htmlFor="soundcloud">soundcloud iframe url</label>
+          <input
+            type="text"
+            id="soundcloud"
+            onChange={e => onChange(e, 'soundcloud')}
+            value={formContext.context.soundcloud}
+          />
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
+        </div>
+      ) : null}
+      {formContext.matches(PATH) ? (
+        <div>
+          <label htmlFor="path">path</label>
+          <input
+            type="text"
+            id="path"
+            onChange={e => onChange(e, 'path')}
+            value={formContext.context.path}
+          />
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
+        </div>
+      ) : null}
+      {formContext.matches(CONTENT) ? (
+        <div>
+          <ReactMde
+            value={formContext.context.content}
+            onChange={onChangeContent}
+            selectedTab={selectedTab}
+            onTabChange={setSelectedTab}
+            generateMarkdownPreview={markdown =>
+              Promise.resolve(<ReactMarkdown source={markdown} />)
+            }
+          />
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
+        </div>
+      ) : null}
+      {formContext.matches(SLUG) ? (
+        <div>
+          <label htmlFor="slug">slug</label>
+          <input
+            type="text"
+            id="slug"
+            onChange={e => onChange(e, 'slug')}
+            value={formContext.context.slug}
+          />
+          <button onClick={onNext}>next</button>
+          <button onClick={onPrev}>prev</button>
+        </div>
+      ) : null}
+      {formContext.matches(FINAL) ? (
+        <div>
+          <button onClick={() => save()}>save</button>
+        </div>
+      ) : null}
+    </div>
   )
 }
 
-export default CreateForm
+export default ArticleForm

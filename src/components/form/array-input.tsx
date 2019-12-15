@@ -1,7 +1,24 @@
 import React, { useEffect, useState, createRef, useCallback } from 'react'
+import styled from 'styled-components'
 
-const SubList = ({ data }: { data: any[] }) => {
-  const [list, setList] = useState([...data])
+const SubItem = styled.li`
+  position: relative;
+  display: inline-box;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #913d75;
+  color: white;
+
+  :hover {
+    background-color: red;
+  }
+`
+
+const SubList = ({ data, remove }: { data: string[]; remove: (el: string) => void }) => {
+  const [list, setList] = useState(data)
+  const onRemove = useCallback((el: string) => {
+    remove(el)
+  }, [remove])
 
   useEffect(() => {
     setList([...data])
@@ -10,17 +27,17 @@ const SubList = ({ data }: { data: any[] }) => {
   return (
     <ul>
       {list.map(el => (
-        <li key={el}>{el}</li>
+        <SubItem key={el} onClick={() => onRemove(el)}>{el}</SubItem>
       ))}
     </ul>
   )
 }
 
 interface Props {
-  values: any[]
-  id: string
-  title: string
-  setNewValue: (value: any) => void
+  values: string[];
+  id: string;
+  title: string;
+  setNewValue: (value: string[]) => void;
 }
 
 const ArrayInput = ({ values, setNewValue, id, title }: Props) => {
@@ -28,10 +45,8 @@ const ArrayInput = ({ values, setNewValue, id, title }: Props) => {
   const [value, setValue] = useState('')
 
   const onChange = useCallback(
-    (e: React.SyntheticEvent<HTMLInputElement>) => {
-      console.log(e.currentTarget.value)
-      setValue(e.currentTarget.value)
-    },
+    (e: React.SyntheticEvent<HTMLInputElement>) =>
+      setValue(e.currentTarget.value),
     [setValue]
   )
 
@@ -39,13 +54,18 @@ const ArrayInput = ({ values, setNewValue, id, title }: Props) => {
     (e: React.KeyboardEvent) => {
       if (e.keyCode === 13) {
         const newValues = new Set([...values, value])
-        console.log(newValues)
         setNewValue([...newValues])
         setValue('')
       }
     },
     [setNewValue, setValue, value]
   )
+
+  const removeValue = useCallback((el: string) => {
+    const set = new Set([...values])
+    set.delete(el)
+    setNewValue([ ...set ])
+  }, [setNewValue, values])
 
   return (
     <>
@@ -58,7 +78,7 @@ const ArrayInput = ({ values, setNewValue, id, title }: Props) => {
         onChange={onChange}
         value={value}
       />
-      <SubList data={values} />
+      <SubList data={values} remove={removeValue} />
     </>
   )
 }

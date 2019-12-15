@@ -1,14 +1,42 @@
 import React from 'react'
 import { mount, route } from 'navi'
+import { useMachine } from '@xstate/react'
+import styled from 'styled-components'
 
-import CreateForm from '../../components/form/article-form'
+import { useFirebase } from '../../services/firebase'
+import formMachine from '../../machines/formMachine'
+
+import ArticleForm from '../../components/form/article-form'
+import articles from './../../../mocks/articles.json'
+
+const Container = styled.div`
+  flex: 1;
+  display: flex;
+  align-self: stretch;
+  flex-direction: column;
+  align-items: center;
+  background-color: #913d75;
+  padding: 24px;
+`
 
 const Create = () => {
+  const firebase = useFirebase()
+  const [formState, sendToMachine] = useMachine(formMachine, { context: articles[0] })
+
+  const save = async () => {
+    try {
+      await firebase.firestore().collection('articles').doc(formState.context.slug).set(formState.context)
+      console.log('created article')
+    } catch(err) {
+      console.error(err)
+    }
+  }
+
   return (
-    <div>
+    <Container>
       <h1>Create</h1>
-      <CreateForm />
-    </div>
+      <ArticleForm dispatch={sendToMachine} formContext={formState} save={save} />
+    </Container>
   )
 }
 
