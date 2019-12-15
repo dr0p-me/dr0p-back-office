@@ -1,0 +1,9 @@
+{
+  "name": "dr0p-back-office",
+  "builds": [
+    {
+      "src": "api/*.ts",
+      "use": "@now/node"
+    }
+  ]
+}

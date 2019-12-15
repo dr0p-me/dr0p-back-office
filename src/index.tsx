@@ -1,8 +1,8 @@
+import {} from 'react-dom/experimental'
 import * as React from 'react'
-import { render } from 'react-dom'
+import ReactDom from 'react-dom'
 
-import Title from './components/Title'
+import App from './App'
 
-const root = document.getElementById('main')
-
-render(<Title>Hello World</Title>, root)
+const root = document.getElementById('main') as HTMLElement
+ReactDom.createRoot(root).render(<App />)
