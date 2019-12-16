@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 const StyledInput = styled.input`
@@ -10,9 +10,14 @@ const StyledInput = styled.input`
   display: flex;
   border: none;
   outline: none;
-  padding: 8px 32px 8px 16px;
+  padding: 8px 32px 8px 8px;
   border-top-right-radius: 32px;
   border-bottom-right-radius: 32px;
+  transition: background-color 350ms ease-out;
+
+  :focus {
+    background-color: rgba(255, 255, 255, 0.8);
+  }
 `
 
 const Wrapper = styled.div`
@@ -22,14 +27,21 @@ const Wrapper = styled.div`
   flex: 1;
 `
 
-const Label = styled.label`
+type Props = {
+  focused: boolean;
+}
+
+const Label = styled.label<Props>`
   color: #913d75;
-  background-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, ${p => (p.focused ? '0.8' : '0.6')});
   text-transform: capitalize;
   font-size: 48px;
-  padding: 8px 16px 8px 32px;
+  padding: 8px 8px 8px 32px;
   border-top-left-radius: 32px;
   border-bottom-left-radius: 32px;
+  transition: background-color 350ms ease-out;
+  font-weight: bold;
+  white-space: nowrap;
 `
 
 const Input = ({
@@ -46,11 +58,16 @@ const Input = ({
   id: string;
   onChange: (e: React.SyntheticEvent<HTMLInputElement>) => void;
   value: string;
-}) => (
-  <Wrapper>
-    <Label htmlFor={htmlFor}>{label}</Label>
-    <StyledInput id={id} type={type} onChange={onChange} value={value} />
-  </Wrapper>
-)
+}) => {
+  const [focused, setFocused] = useState(false)
+  const string = `${label} :`
+  return (
+    <Wrapper>
+      <Label htmlFor={htmlFor} focused={focused}>{string}</Label>
+      <StyledInput id={id} type={type} onChange={onChange} value={value} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)} />
+    </Wrapper>
+  )
+}
+
 
 export default Input
