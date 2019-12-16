@@ -1,5 +1,8 @@
 {
   "name": "dr0p-back-office",
+  "github": {
+    "enabled": false
+  },
   "builds": [
     {
       "src": "api/*.ts",

@@ -161,8 +161,8 @@ const ArticleForm = ({ dispatch, formContext, save }: Props) => {
           <button onClick={onNext}>next</button>
         )}
         <button onClick={() => dispatch({ type: 'GOTO_TITLE' })}>title</button>
-        <button onClick={() => dispatch({ type: 'GOTO_NUMBER' })}>number</button>
         <button onClick={() => dispatch({ type: 'GOTO_PATH' })}>path</button>
+        <button onClick={() => dispatch({ type: 'GOTO_NUMBER' })}>number</button>
         <button onClick={() => dispatch({ type: 'GOTO_SLUG' })}>slug</button>
         <button onClick={() => dispatch({ type: 'GOTO_DATE' })}>date</button>
         <button onClick={() => dispatch({ type: 'GOTO_CATEGORIES' })}>categories</button>
