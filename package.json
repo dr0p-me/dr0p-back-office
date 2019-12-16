@@ -1,9 +1,8 @@
 {
-  "name": "react-silicon-life",
-  "version": "2.1.0",
-  "main": "index.js",
-  "description": "minimal react typescript jest starter",
-  "repository": "git@github.com:valpinkman/react-silicon-life.git",
+  "name": "dr0p-back-office",
+  "version": "0.1.0",
+  "description": "back office editor for dr0p.me articles",
+  "repository": "git@github.com:dr0p-me/dr0p-back-office.git",
   "author": "Valentin D. Pinkman <valentin.d.pinkman@icloud.com>",
   "license": "MIT",
   "browserslist": [
