@@ -27,6 +27,7 @@
     "navi": "^0.13.6",
     "react": "^0.0.0-experimental-b53ea6ca0",
     "react-dom": "^0.0.0-experimental-b53ea6ca0",
+    "react-dropzone": "^10.2.1",
     "react-markdown": "^4.2.2",
     "react-mde": "^7.8.0",
     "react-navi": "^0.13.6",

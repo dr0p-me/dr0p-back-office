@@ -1,5 +1,6 @@
-import React, { useEffect, useState, createRef, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
+import Input from './input'
 
 const SubItem = styled.li`
   position: relative;
@@ -34,14 +35,20 @@ const SubList = ({ data, remove }: { data: string[]; remove: (el: string) => voi
 }
 
 interface Props {
-  values: string[];
+  label: React.ReactNode;
+  htmlFor: string;
   id: string;
-  title: string;
+  values: string[];
   setNewValue: (value: string[]) => void;
 }
 
-const ArrayInput = ({ values, setNewValue, id, title }: Props) => {
-  const inputRef = createRef<HTMLInputElement>()
+const ArrayInput = ({
+  values,
+  setNewValue,
+  id,
+  label,
+  htmlFor,
+}: Props) => {
   const [value, setValue] = useState('')
 
   const onChange = useCallback(
@@ -61,22 +68,25 @@ const ArrayInput = ({ values, setNewValue, id, title }: Props) => {
     [setNewValue, setValue, value]
   )
 
-  const removeValue = useCallback((el: string) => {
-    const set = new Set([...values])
-    set.delete(el)
-    setNewValue([ ...set ])
-  }, [setNewValue, values])
+  const removeValue = useCallback(
+    (el: string) => {
+      const set = new Set([...values])
+      set.delete(el)
+      setNewValue([...set])
+    },
+    [setNewValue, values]
+  )
 
   return (
     <>
-      <label htmlFor={id}>{title}</label>
-      <input
-        ref={inputRef}
-        type="text"
+      <Input
+        label={label}
+        htmlFor={htmlFor}
         id={id}
-        onKeyUp={onKeyUpHandler}
-        onChange={onChange}
+        type="text"
         value={value}
+        onChange={onChange}
+        onKeyUp={onKeyUpHandler}
       />
       <SubList data={values} remove={removeValue} />
     </>

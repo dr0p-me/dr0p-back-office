@@ -7,10 +7,6 @@ import ReactMarkdown from 'react-markdown'
 import 'react-mde/lib/styles/css/react-mde-all.css'
 
 // import articles from '../../../mocks/articles.json'
-import { Article } from '../../types'
-import ArrayInput from './array-input'
-import Input from './input'
-
 import {
   DATE,
   PATH,
@@ -28,6 +24,17 @@ import {
   FORM_MACHINE_SET_VALUE,
   FormEvents,
 } from '../../machines/formMachine'
+import { Article } from '../../types'
+
+import TitleInput from './article-inputs/title-input'
+import NumberInput from './article-inputs/number-input'
+import DateInput from './article-inputs/date-input'
+import ArtistsInput from './article-inputs/artists-input'
+import CategoriesInput from './article-inputs/categories-input'
+import TagsInput from './article-inputs/tags-input'
+import SoundcloudInput from './article-inputs/soundcloud-input'
+import PathInput from './article-inputs/path-input'
+import SlugInput from './article-inputs/slug-input'
 
 interface Props {
   formContext: State<Article, FormEvents>;
@@ -36,7 +43,6 @@ interface Props {
 }
 
 const ArticleForm = ({ dispatch, formContext, save }: Props) => {
-  // const [formContext, dispatch] = useMachine(formMachine, { context: article })
   const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write')
 
   const onNext = useCallback(
@@ -89,150 +95,84 @@ const ArticleForm = ({ dispatch, formContext, save }: Props) => {
   return (
     <div style={{ flex: 1, width: '100%' }}>
       {formContext.matches(TITLE) ? (
-        <>
-          <Input
-            htmlFor="title"
-            type="text"
-            label="title"
-            id="title"
-            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
-              onChange(e, 'title')
-            }
-            value={formContext.context.title}
-          />
-          <button onClick={onNext}>next</button>
-        </>
+        <TitleInput value={formContext.context.title} onChange={onChange} />
       ) : null}
       {formContext.matches(NUMBER) ? (
-        <>
-          <Input
-            htmlFor="number"
-            type="number"
-            label="number"
-            id="number"
-            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
-              onChange(e, 'number')
-            }
-            value={formContext.context.number}
-          />
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </>
+        <NumberInput value={formContext.context.number} onChange={onChange} />
       ) : null}
       {formContext.matches(DATE) ? (
-        <div>
-          <Input
-            htmlFor="date"
-            type="date"
-            label="date"
-            id="date"
-            onChange={(e: React.SyntheticEvent<HTMLInputElement>) =>
-              onChange(e, 'date')
-            }
-            value={formContext.context.date}
-          />
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <DateInput value={formContext.context.date} onChange={onChange} />
       ) : null}
       {formContext.matches(ARTISTS) ? (
-        <div>
-          <ArrayInput
-            title="artists"
-            id="artists"
-            setNewValue={val => onChangeArray(val, 'artists')}
-            values={formContext.context.artists}
-          />
-
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <ArtistsInput
+          setNewValue={val => onChangeArray(val, 'artists')}
+          values={formContext.context.artists}
+        />
       ) : null}
       {formContext.matches(CATEGORIES) ? (
-        <div>
-          <ArrayInput
-            title="categories"
-            id="categories"
-            setNewValue={val => onChangeArray(val, 'categories')}
-            values={formContext.context.categories}
-          />
-
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <CategoriesInput
+          setNewValue={val => onChangeArray(val, 'categories')}
+          values={formContext.context.categories}
+        />
       ) : null}
       {formContext.matches(TAGS) ? (
-        <div>
-          <ArrayInput
-            title="tags"
-            id="tags"
-            setNewValue={val => onChangeArray(val, 'tags')}
-            values={formContext.context.tags}
-          />
-
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <TagsInput
+          setNewValue={val => onChangeArray(val, 'tags')}
+          values={formContext.context.tags}
+        />
       ) : null}
       {formContext.matches(SOUNDCLOUD) ? (
-        <div>
-          <label htmlFor="soundcloud">soundcloud iframe url</label>
-          <input
-            type="text"
-            id="soundcloud"
-            onChange={e => onChange(e, 'soundcloud')}
-            value={formContext.context.soundcloud}
-          />
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <SoundcloudInput
+          value={formContext.context.soundcloud}
+          onChange={onChange}
+        />
       ) : null}
       {formContext.matches(PATH) ? (
-        <div>
-          <label htmlFor="path">path</label>
-          <input
-            type="text"
-            id="path"
-            onChange={e => onChange(e, 'path')}
-            value={formContext.context.path}
-          />
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <PathInput value={formContext.context.path} onChange={onChange} />
       ) : null}
       {formContext.matches(CONTENT) ? (
-        <div>
-          <ReactMde
-            value={formContext.context.content}
-            onChange={onChangeContent}
-            selectedTab={selectedTab}
-            onTabChange={setSelectedTab}
-            generateMarkdownPreview={markdown =>
-              Promise.resolve(<ReactMarkdown source={markdown} />)
-            }
-          />
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <ReactMde
+          value={formContext.context.content}
+          onChange={onChangeContent}
+          selectedTab={selectedTab}
+          onTabChange={setSelectedTab}
+          generateMarkdownPreview={markdown =>
+            Promise.resolve(<ReactMarkdown source={markdown} />)
+          }
+        />
       ) : null}
       {formContext.matches(SLUG) ? (
-        <div>
-          <label htmlFor="slug">slug</label>
-          <input
-            type="text"
-            id="slug"
-            onChange={e => onChange(e, 'slug')}
-            value={formContext.context.slug}
-          />
-          <button onClick={onNext}>next</button>
-          <button onClick={onPrev}>prev</button>
-        </div>
+        <SlugInput value={formContext.context.slug} onChange={onChange} />
       ) : null}
       {formContext.matches(FINAL) ? (
         <div>
           <button onClick={() => save()}>save</button>
         </div>
       ) : null}
+      <footer>
+        {formContext.matches(TITLE) ? (
+          <div />
+        ) : (
+          <button onClick={onPrev}>prev</button>
+        )}
+        {formContext.matches(FINAL) ? (
+          <div />
+        ) : (
+          <button onClick={onNext}>next</button>
+        )}
+        <button onClick={() => dispatch({ type: 'GOTO_TITLE' })}>title</button>
+        <button onClick={() => dispatch({ type: 'GOTO_NUMBER' })}>number</button>
+        <button onClick={() => dispatch({ type: 'GOTO_PATH' })}>path</button>
+        <button onClick={() => dispatch({ type: 'GOTO_SLUG' })}>slug</button>
+        <button onClick={() => dispatch({ type: 'GOTO_DATE' })}>date</button>
+        <button onClick={() => dispatch({ type: 'GOTO_CATEGORIES' })}>categories</button>
+        <button onClick={() => dispatch({ type: 'GOTO_ARTISTS' })}>artists</button>
+        <button onClick={() => dispatch({ type: 'GOTO_TRACKLIST' })}>tracklist</button>
+        <button onClick={() => dispatch({ type: 'GOTO_IMAGE' })}>image</button>
+        <button onClick={() => dispatch({ type: 'GOTO_SOUNDCLOUD' })}>soundcloud</button>
+        <button onClick={() => dispatch({ type: 'GOTO_CONTENT' })}>content</button>
+        <button onClick={() => dispatch({ type: 'GOTO_TAGS' })}>tags</button>
+      </footer>
     </div>
   )
 }

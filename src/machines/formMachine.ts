@@ -41,11 +41,54 @@ interface FormState {
 type NextEvent = { type: 'NEXT' }
 type PrevEvent = { type: 'PREV' }
 type StartEvent = { type: 'START' }
+type GoToTitleEvent = {type: 'GOTO_TITLE'}
+type GoToNumberEvent = {type: 'GOTO_NUMBER'}
+type GoToDateEvent = {type: 'GOTO_DATE'}
+type GoToPathEvent = {type: 'GOTO_PATH'}
+type GoToArtistsEvent = {type: 'GOTO_ARTISTS'}
+type GoToSoundcloudEvent = {type: 'GOTO_SOUNDCLOUD'}
+type GoToTracklistEvent = {type: 'GOTO_TRACKLIST'}
+type GoToTagsEvent = {type: 'GOTO_TAGS'}
+type GoToCategoriesEvent = {type: 'GOTO_CATEGORIES'}
+type GoToContentEvent = {type: 'GOTO_CONTENT'}
+type GoToImageEvent = {type: 'GOTO_IMAGE'}
+type GoToSlugEvent = {type: 'GOTO_SLUG'}
 type SetValueEvent = { type: 'SET_VALUE'; key: keyof Article; payload: string | string[] }
 
-export type FormEvents = NextEvent | PrevEvent | StartEvent | SetValueEvent
+export type FormEvents =
+  | NextEvent
+  | PrevEvent
+  | StartEvent
+  | SetValueEvent
+  | GoToTitleEvent
+  | GoToNumberEvent
+  | GoToDateEvent
+  | GoToPathEvent
+  | GoToArtistsEvent
+  | GoToSoundcloudEvent
+  | GoToTracklistEvent
+  | GoToTagsEvent
+  | GoToCategoriesEvent
+  | GoToContentEvent
+  | GoToImageEvent
+  | GoToSlugEvent
 
 type FormContext = Article
+
+const goToBuilder = () => ({
+  GOTO_TITLE: TITLE,
+  GOTO_NUMBER: NUMBER,
+  GOTO_DATE: DATE,
+  GOTO_PATH: PATH,
+  GOTO_ARTISTS: ARTISTS,
+  GOTO_SOUNDCLOUD: SOUNDCLOUD,
+  GOTO_TRACKLIST: TRACKLIST,
+  GOTO_TAGS: TAGS,
+  GOTO_CATEGORIES: CATEGORIES,
+  GOTO_CONTENT: CONTENT,
+  GOTO_IMAGE: IMAGE,
+  GOTO_SLUG: SLUG,
+})
 
 const formMachine = Machine<FormContext, FormState, FormEvents>(
   {
@@ -74,6 +117,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           SET_VALUE: {
             actions: 'setValue',
           },
+          ...goToBuilder(),
         },
       },
       [NUMBER]: {
@@ -85,6 +129,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
             actions: 'setValue',
           },
           PREV: TITLE,
+          ...goToBuilder(),
         },
       },
       [IMAGE]: {
@@ -97,6 +142,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: NUMBER,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [DATE]: {
@@ -109,6 +155,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: NUMBER, // TODO: GO TO IMAGE
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [ARTISTS]: {
@@ -121,6 +168,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: DATE,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [TRACKLIST]: {
@@ -133,6 +181,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: ARTISTS,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [CATEGORIES]: {
@@ -145,6 +194,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: ARTISTS, // TODO: GO TO TRACKLIST
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [TAGS]: {
@@ -157,6 +207,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: CATEGORIES,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [SOUNDCLOUD]: {
@@ -169,6 +220,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: TAGS,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [PATH]: {
@@ -181,6 +233,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: SOUNDCLOUD,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [CONTENT]: {
@@ -193,6 +246,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: PATH,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [SLUG]: {
@@ -205,6 +259,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           },
           PREV: CONTENT,
           START: TITLE,
+          ...goToBuilder(),
         },
       },
       [FINAL]: {
