@@ -15,7 +15,7 @@ const Container = styled.div`
   align-self: stretch;
   flex-direction: column;
   align-items: center;
-  background-color: #913d75;
+  background-color: #e9225e;
   padding: 24px;
 `
 
@@ -25,9 +25,13 @@ const Create = () => {
 
   const save = async () => {
     try {
-      await firebase.firestore().collection('articles').doc(formState.context.slug).set(formState.context)
+      await firebase
+        .firestore()
+        .collection('articles')
+        .doc(formState.context.slug)
+        .set(formState.context)
       console.log('created article')
-    } catch(err) {
+    } catch (err) {
       console.error(err)
     }
   }

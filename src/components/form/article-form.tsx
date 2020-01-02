@@ -17,14 +17,17 @@ import {
   NUMBER,
   CONTENT,
   ARTISTS,
+  TRACKLIST,
   CATEGORIES,
+  PREVIEW,
+  IMAGE,
   SOUNDCLOUD,
   FORM_MACHINE_NEXT,
   FORM_MACHINE_PREV,
   FORM_MACHINE_SET_VALUE,
   FormEvents,
 } from '../../machines/formMachine'
-import { Article } from '../../types'
+import { Article, Track } from '../../types'
 
 import TitleInput from './article-inputs/title-input'
 import NumberInput from './article-inputs/number-input'
@@ -35,71 +38,68 @@ import TagsInput from './article-inputs/tags-input'
 import SoundcloudInput from './article-inputs/soundcloud-input'
 import PathInput from './article-inputs/path-input'
 import SlugInput from './article-inputs/slug-input'
+import TracklistInput from './article-inputs/tracklist-input'
+import ImageInput from './article-inputs/image-input'
 
 interface Props {
-  formContext: State<Article, FormEvents>;
-  dispatch: (obj: FormEvents) => void;
-  save: () => void;
+  formContext: State<Article, FormEvents>
+  dispatch: (obj: FormEvents) => void
+  save: () => void
 }
 
 const ArticleForm = ({ dispatch, formContext, save }: Props) => {
   const [selectedTab, setSelectedTab] = useState<'write' | 'preview'>('write')
 
-  const onNext = useCallback(
-    () => {
-      dispatch({ type: FORM_MACHINE_NEXT})
-    },
-    [dispatch]
-  )
+  const onNext = useCallback(() => {
+    dispatch({ type: FORM_MACHINE_NEXT })
+  }, [])
 
-  const onPrev = useCallback(
-    () => {
-      dispatch({type:FORM_MACHINE_PREV})
-    },
-    [dispatch]
-  )
+  const onPrev = useCallback(() => {
+    dispatch({ type: FORM_MACHINE_PREV })
+  }, [])
 
-  const onChange = useCallback(
-    (e: React.SyntheticEvent<HTMLInputElement>, type) => {
-      dispatch({
-        type: FORM_MACHINE_SET_VALUE,
-        key: type,
-        payload: e.currentTarget.value,
-      })
-    },
-    [dispatch]
-  )
+  const onChange = useCallback((e: React.SyntheticEvent<HTMLInputElement>, type) => {
+    dispatch({
+      type: FORM_MACHINE_SET_VALUE,
+      key: type,
+      payload: e.currentTarget.value,
+    })
+  }, [])
 
-  const onChangeContent = useCallback(
-    (e: string) => {
-      dispatch({
-        type: FORM_MACHINE_SET_VALUE,
-        key: 'content',
-        payload: e,
-      })
-    },
-    [dispatch]
-  )
+  const onChangeContent = useCallback((e: string) => {
+    dispatch({
+      type: FORM_MACHINE_SET_VALUE,
+      key: 'content',
+      payload: e,
+    })
+  }, [])
 
-  const onChangeArray = useCallback(
-    (value: string[], type: keyof Article) => {
-      dispatch({
-        type: FORM_MACHINE_SET_VALUE,
-        key: type,
-        payload: value,
-      })
-    },
-    [dispatch]
-  )
+  const onChangeArray = useCallback((value: string[] | Track[], type: keyof Article) => {
+    dispatch({
+      type: FORM_MACHINE_SET_VALUE,
+      key: type,
+      payload: value,
+    })
+  }, [])
+
+  const onChangeImage = useCallback((imageUrl: string) => {
+    dispatch({
+      type: FORM_MACHINE_SET_VALUE,
+      key: 'image',
+      payload: imageUrl,
+    })
+  }, [])
 
   return (
     <div style={{ flex: 1, width: '100%' }}>
       {formContext.matches(TITLE) ? (
         <TitleInput value={formContext.context.title} onChange={onChange} />
       ) : null}
+
       {formContext.matches(NUMBER) ? (
         <NumberInput value={formContext.context.number} onChange={onChange} />
       ) : null}
+
       {formContext.matches(DATE) ? (
         <DateInput value={formContext.context.date} onChange={onChange} />
       ) : null}
@@ -109,61 +109,70 @@ const ArticleForm = ({ dispatch, formContext, save }: Props) => {
           values={formContext.context.artists}
         />
       ) : null}
+
       {formContext.matches(CATEGORIES) ? (
         <CategoriesInput
           setNewValue={val => onChangeArray(val, 'categories')}
           values={formContext.context.categories}
         />
       ) : null}
+
+      {formContext.matches(IMAGE) ? (
+        <ImageInput currentImage={formContext.context.image} onChangeImage={onChangeImage} />
+      ) : null}
+
       {formContext.matches(TAGS) ? (
         <TagsInput
           setNewValue={val => onChangeArray(val, 'tags')}
           values={formContext.context.tags}
         />
       ) : null}
+
       {formContext.matches(SOUNDCLOUD) ? (
-        <SoundcloudInput
-          value={formContext.context.soundcloud}
-          onChange={onChange}
+        <SoundcloudInput value={formContext.context.soundcloud} onChange={onChange} />
+      ) : null}
+
+      {formContext.matches(TRACKLIST) ? (
+        <TracklistInput
+          values={formContext.context.tracklist}
+          setNewValue={val => onChangeArray(val, 'tracklist')}
         />
       ) : null}
+
       {formContext.matches(PATH) ? (
         <PathInput value={formContext.context.path} onChange={onChange} />
       ) : null}
+
       {formContext.matches(CONTENT) ? (
         <ReactMde
           value={formContext.context.content}
           onChange={onChangeContent}
           selectedTab={selectedTab}
           onTabChange={setSelectedTab}
-          generateMarkdownPreview={markdown =>
-            Promise.resolve(<ReactMarkdown source={markdown} />)
-          }
+          generateMarkdownPreview={markdown => Promise.resolve(<ReactMarkdown source={markdown} />)}
         />
       ) : null}
+
       {formContext.matches(SLUG) ? (
         <SlugInput value={formContext.context.slug} onChange={onChange} />
       ) : null}
+
+      {formContext.matches(PREVIEW) ? <div>Preview</div> : null}
+
       {formContext.matches(FINAL) ? (
         <div>
           <button onClick={() => save()}>save</button>
         </div>
       ) : null}
+
       <footer>
-        {formContext.matches(TITLE) ? (
-          <div />
-        ) : (
-          <button onClick={onPrev}>prev</button>
-        )}
-        {formContext.matches(FINAL) ? (
-          <div />
-        ) : (
-          <button onClick={onNext}>next</button>
-        )}
+        {formContext.matches(TITLE) ? <div /> : <button onClick={onPrev}>prev</button>}
+        {formContext.matches(FINAL) ? <div /> : <button onClick={onNext}>next</button>}
         <button onClick={() => dispatch({ type: 'GOTO_TITLE' })}>title</button>
         <button onClick={() => dispatch({ type: 'GOTO_PATH' })}>path</button>
         <button onClick={() => dispatch({ type: 'GOTO_NUMBER' })}>number</button>
         <button onClick={() => dispatch({ type: 'GOTO_SLUG' })}>slug</button>
+        <button onClick={() => dispatch({ type: 'GOTO_IMAGE' })}>image</button>
         <button onClick={() => dispatch({ type: 'GOTO_DATE' })}>date</button>
         <button onClick={() => dispatch({ type: 'GOTO_CATEGORIES' })}>categories</button>
         <button onClick={() => dispatch({ type: 'GOTO_ARTISTS' })}>artists</button>
@@ -171,7 +180,9 @@ const ArticleForm = ({ dispatch, formContext, save }: Props) => {
         <button onClick={() => dispatch({ type: 'GOTO_IMAGE' })}>image</button>
         <button onClick={() => dispatch({ type: 'GOTO_SOUNDCLOUD' })}>soundcloud</button>
         <button onClick={() => dispatch({ type: 'GOTO_CONTENT' })}>content</button>
+        <button onClick={() => dispatch({ type: 'GOTO_TRACKLIST' })}>Tracklist</button>
         <button onClick={() => dispatch({ type: 'GOTO_TAGS' })}>tags</button>
+        <button onClick={() => dispatch({ type: 'GOTO_PREVIEW' })}>preview</button>
       </footer>
     </div>
   )

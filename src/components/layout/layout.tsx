@@ -24,7 +24,7 @@ const Menu = styled.div`
 `
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const Layout = ({ children }: Props) => {

@@ -5,7 +5,7 @@ import Input from '../input'
 type Props = {
   onChange: (e: React.SyntheticEvent<HTMLInputElement>, key: string) => void;
   value: string;
-}
+};
 
 const TitleInput = ({ onChange, value }: Props) => (
   <Input
@@ -17,6 +17,5 @@ const TitleInput = ({ onChange, value }: Props) => (
     onChange={e => onChange(e, 'title')}
   />
 )
-
 
 export default TitleInput

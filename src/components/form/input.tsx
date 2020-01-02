@@ -5,7 +5,8 @@ const StyledInput = styled.input`
   width: 100%;
   position: relative;
   background-color: rgba(255, 255, 255, 0.6);
-  color: #913d75;
+  /* color: #913d75; */
+  color: #e9225e;
   font-size: 32px;
   display: flex;
   border: none;
@@ -28,13 +29,14 @@ const Wrapper = styled.div`
 `
 
 type Props = {
-  focused: boolean;
+  focused: boolean
 }
 
 const Label = styled.label<Props>`
   display: flex;
   align-items: center;
-  color: #913d75;
+  /* color: #913d75; */
+  color: #e9225e;
   background-color: rgba(255, 255, 255, ${p => (p.focused ? '0.8' : '0.6')});
   text-transform: capitalize;
   font-size: 32px;
@@ -47,24 +49,16 @@ const Label = styled.label<Props>`
 `
 
 type InputProps = {
-  label: React.ReactNode;
-  htmlFor: string;
-  type: string;
-  id: string;
-  onChange: (e: React.SyntheticEvent<HTMLInputElement>) => void;
-  onKeyUp?: (e: React.KeyboardEvent) => void;
-  value: string;
+  label: React.ReactNode
+  htmlFor: string
+  type: string
+  id: string
+  onChange: (e: React.SyntheticEvent<HTMLInputElement>) => void
+  onKeyUp?: (e: React.KeyboardEvent) => void
+  value: string
 }
 
-const Input = ({
-  label,
-  htmlFor,
-  type,
-  id,
-  onChange,
-  value,
-  onKeyUp,
-}: InputProps) => {
+const Input = ({ label, htmlFor, type, id, onChange, value, onKeyUp }: InputProps) => {
   const [focused, setFocused] = useState(false)
   const renderLabel = typeof label === 'string' ? `${label} :` : label
   return (
@@ -84,6 +78,5 @@ const Input = ({
     </Wrapper>
   )
 }
-
 
 export default Input

@@ -1,5 +1,5 @@
 import { Machine, assign } from 'xstate'
-import { Article } from '../types'
+import { Article, Track } from '../types'
 
 export const TITLE = 'TITLE'
 export const NUMBER = 'NUMBER'
@@ -13,6 +13,7 @@ export const CATEGORIES = 'CATEGORIES'
 export const CONTENT = 'CONTENT'
 export const IMAGE = 'IMAGE'
 export const SLUG = 'SLUG'
+export const PREVIEW = 'PREVIEW'
 export const FINAL = 'FINAL'
 
 export const FORM_MACHINE_NEXT = 'NEXT'
@@ -22,38 +23,40 @@ export const FORM_MACHINE_SET_VALUE = 'SET_VALUE'
 
 interface FormState {
   states: {
-    TITLE: {};
-    NUMBER: {};
-    DATE: {};
-    PATH: {};
-    ARTISTS: {};
-    SOUNDCLOUD: {};
-    TRACKLIST: {};
-    TAGS: {};
-    CATEGORIES: {};
-    CONTENT: {};
-    IMAGE: {};
-    SLUG: {};
-    FINAL: {};
-  };
+    TITLE: {}
+    NUMBER: {}
+    DATE: {}
+    PATH: {}
+    ARTISTS: {}
+    SOUNDCLOUD: {}
+    TRACKLIST: {}
+    TAGS: {}
+    CATEGORIES: {}
+    CONTENT: {}
+    IMAGE: {}
+    SLUG: {}
+    PREVIEW: {}
+    FINAL: {}
+  }
 }
 
 type NextEvent = { type: 'NEXT' }
 type PrevEvent = { type: 'PREV' }
 type StartEvent = { type: 'START' }
-type GoToTitleEvent = {type: 'GOTO_TITLE'}
-type GoToNumberEvent = {type: 'GOTO_NUMBER'}
-type GoToDateEvent = {type: 'GOTO_DATE'}
-type GoToPathEvent = {type: 'GOTO_PATH'}
-type GoToArtistsEvent = {type: 'GOTO_ARTISTS'}
-type GoToSoundcloudEvent = {type: 'GOTO_SOUNDCLOUD'}
-type GoToTracklistEvent = {type: 'GOTO_TRACKLIST'}
-type GoToTagsEvent = {type: 'GOTO_TAGS'}
-type GoToCategoriesEvent = {type: 'GOTO_CATEGORIES'}
-type GoToContentEvent = {type: 'GOTO_CONTENT'}
-type GoToImageEvent = {type: 'GOTO_IMAGE'}
-type GoToSlugEvent = {type: 'GOTO_SLUG'}
-type SetValueEvent = { type: 'SET_VALUE'; key: keyof Article; payload: string | string[] }
+type GoToTitleEvent = { type: 'GOTO_TITLE' }
+type GoToNumberEvent = { type: 'GOTO_NUMBER' }
+type GoToDateEvent = { type: 'GOTO_DATE' }
+type GoToPathEvent = { type: 'GOTO_PATH' }
+type GoToArtistsEvent = { type: 'GOTO_ARTISTS' }
+type GoToSoundcloudEvent = { type: 'GOTO_SOUNDCLOUD' }
+type GoToTracklistEvent = { type: 'GOTO_TRACKLIST' }
+type GoToTagsEvent = { type: 'GOTO_TAGS' }
+type GoToCategoriesEvent = { type: 'GOTO_CATEGORIES' }
+type GoToContentEvent = { type: 'GOTO_CONTENT' }
+type GoToImageEvent = { type: 'GOTO_IMAGE' }
+type GoToSlugEvent = { type: 'GOTO_SLUG' }
+type GoToPreviewEvent = { type: 'GOTO_PREVIEW' }
+type SetValueEvent = { type: 'SET_VALUE'; key: keyof Article; payload: string | string[] | Track[] }
 
 export type FormEvents =
   | NextEvent
@@ -72,6 +75,7 @@ export type FormEvents =
   | GoToContentEvent
   | GoToImageEvent
   | GoToSlugEvent
+  | GoToPreviewEvent
 
 type FormContext = Article
 
@@ -88,6 +92,7 @@ const goToBuilder = () => ({
   GOTO_CONTENT: CONTENT,
   GOTO_IMAGE: IMAGE,
   GOTO_SLUG: SLUG,
+  GOTO_PREVIEW: PREVIEW,
 })
 
 const formMachine = Machine<FormContext, FormState, FormEvents>(
@@ -123,7 +128,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
       [NUMBER]: {
         on: {
           NEXT: {
-            target: DATE, // TODO: GO TO IMAGE
+            target: IMAGE,
           },
           SET_VALUE: {
             actions: 'setValue',
@@ -153,7 +158,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           SET_VALUE: {
             actions: 'setValue',
           },
-          PREV: NUMBER, // TODO: GO TO IMAGE
+          PREV: IMAGE,
           START: TITLE,
           ...goToBuilder(),
         },
@@ -161,7 +166,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
       [ARTISTS]: {
         on: {
           NEXT: {
-            target: CATEGORIES, // TODO: GO TO TRACKLIST
+            target: TRACKLIST,
           },
           SET_VALUE: {
             actions: 'setValue',
@@ -192,7 +197,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
           SET_VALUE: {
             actions: 'setValue',
           },
-          PREV: ARTISTS, // TODO: GO TO TRACKLIST
+          PREV: TRACKLIST,
           START: TITLE,
           ...goToBuilder(),
         },
@@ -252,12 +257,22 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
       [SLUG]: {
         on: {
           NEXT: {
-            target: FINAL,
+            target: PREVIEW,
           },
           SET_VALUE: {
             actions: 'setValue',
           },
           PREV: CONTENT,
+          START: TITLE,
+          ...goToBuilder(),
+        },
+      },
+      [PREVIEW]: {
+        on: {
+          NEXT: {
+            target: FINAL,
+          },
+          PREV: SLUG,
           START: TITLE,
           ...goToBuilder(),
         },
@@ -272,9 +287,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
     actions: {
       logArticle: context => console.log(context),
       setValue: assign((context: FormContext, event: FormEvents) =>
-        event.type === FORM_MACHINE_SET_VALUE
-          ? { [event.key]: event.payload }
-          : {}
+        event.type === FORM_MACHINE_SET_VALUE ? { [event.key]: event.payload } : {}
       ),
     },
   }
