@@ -4,9 +4,9 @@ import { State } from 'xstate'
 
 import ReactMde from 'react-mde'
 import ReactMarkdown from 'react-markdown'
+import styled from 'styled-components'
 import 'react-mde/lib/styles/css/react-mde-all.css'
 
-// import articles from '../../../mocks/articles.json'
 import {
   DATE,
   PATH,
@@ -40,6 +40,21 @@ import PathInput from './article-inputs/path-input'
 import SlugInput from './article-inputs/slug-input'
 import TracklistInput from './article-inputs/tracklist-input'
 import ImageInput from './article-inputs/image-input'
+import Title from '../title'
+import { Subtitle } from '../title'
+
+const Wrapper = styled.div`
+  display: flex;
+  flex: 1;
+  align-content: center;
+  justify-content: center;
+  flex-direction: column;
+  align-self: stretch;
+  margin: 0 24px 24px;
+  /* border-radius: 24px;
+  background-color: white;
+  box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.05); */
+`
 
 interface Props {
   formContext: State<Article, FormEvents>
@@ -91,7 +106,8 @@ const ArticleForm = ({ dispatch, formContext, save }: Props) => {
   }, [])
 
   return (
-    <div style={{ flex: 1, width: '100%' }}>
+    <Wrapper>
+      <Title style={{ textAlign: 'center' }}>Create</Title>
       {formContext.matches(TITLE) ? (
         <TitleInput value={formContext.context.title} onChange={onChange} />
       ) : null}
@@ -118,7 +134,10 @@ const ArticleForm = ({ dispatch, formContext, save }: Props) => {
       ) : null}
 
       {formContext.matches(IMAGE) ? (
-        <ImageInput currentImage={formContext.context.image} onChangeImage={onChangeImage} />
+        <>
+          <Subtitle>Cover</Subtitle>
+          <ImageInput currentImage={formContext.context.image} onChangeImage={onChangeImage} />
+        </>
       ) : null}
 
       {formContext.matches(TAGS) ? (
@@ -168,23 +187,8 @@ const ArticleForm = ({ dispatch, formContext, save }: Props) => {
       <footer>
         {formContext.matches(TITLE) ? <div /> : <button onClick={onPrev}>prev</button>}
         {formContext.matches(FINAL) ? <div /> : <button onClick={onNext}>next</button>}
-        <button onClick={() => dispatch({ type: 'GOTO_TITLE' })}>title</button>
-        <button onClick={() => dispatch({ type: 'GOTO_PATH' })}>path</button>
-        <button onClick={() => dispatch({ type: 'GOTO_NUMBER' })}>number</button>
-        <button onClick={() => dispatch({ type: 'GOTO_SLUG' })}>slug</button>
-        <button onClick={() => dispatch({ type: 'GOTO_IMAGE' })}>image</button>
-        <button onClick={() => dispatch({ type: 'GOTO_DATE' })}>date</button>
-        <button onClick={() => dispatch({ type: 'GOTO_CATEGORIES' })}>categories</button>
-        <button onClick={() => dispatch({ type: 'GOTO_ARTISTS' })}>artists</button>
-        <button onClick={() => dispatch({ type: 'GOTO_TRACKLIST' })}>tracklist</button>
-        <button onClick={() => dispatch({ type: 'GOTO_IMAGE' })}>image</button>
-        <button onClick={() => dispatch({ type: 'GOTO_SOUNDCLOUD' })}>soundcloud</button>
-        <button onClick={() => dispatch({ type: 'GOTO_CONTENT' })}>content</button>
-        <button onClick={() => dispatch({ type: 'GOTO_TRACKLIST' })}>Tracklist</button>
-        <button onClick={() => dispatch({ type: 'GOTO_TAGS' })}>tags</button>
-        <button onClick={() => dispatch({ type: 'GOTO_PREVIEW' })}>preview</button>
       </footer>
-    </div>
+    </Wrapper>
   )
 }
 

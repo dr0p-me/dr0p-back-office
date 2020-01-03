@@ -1,9 +1,19 @@
-import * as React from 'react'
+import styled from 'styled-components'
 
-interface TitleProps {
-  children: React.ReactNode;
-}
+const Title = styled.h1`
+  font-family: Inter;
+  font-weight: 600;
+  color: black;
+  font-size: 48px;
+  padding: 16px 0;
+`
 
-const Title: React.FunctionComponent<TitleProps> = ({ children }: TitleProps) => <h1>{children}</h1>
+export const Subtitle = styled.h2`
+  font-family: Inter;
+  font-weight: 500;
+  color: black;
+  font-size: 36px;
+  padding: 12px 0;
+`
 
 export default Title

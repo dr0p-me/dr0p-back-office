@@ -95,12 +95,27 @@ const goToBuilder = () => ({
   GOTO_PREVIEW: PREVIEW,
 })
 
+export const machineStates = [
+  TITLE,
+  NUMBER,
+  IMAGE,
+  DATE,
+  ARTISTS,
+  TRACKLIST,
+  CATEGORIES,
+  TAGS,
+  SOUNDCLOUD,
+  PATH,
+  CONTENT,
+  SLUG,
+  PREVIEW,
+]
+
 const formMachine = Machine<FormContext, FormState, FormEvents>(
   {
     id: 'form',
-    initial: TITLE,
+    initial: IMAGE,
     context: {
-      slug: '',
       title: '',
       number: '',
       image: '',
@@ -112,6 +127,7 @@ const formMachine = Machine<FormContext, FormState, FormEvents>(
       soundcloud: '',
       path: '',
       content: '',
+      slug: '',
     },
     states: {
       [TITLE]: {

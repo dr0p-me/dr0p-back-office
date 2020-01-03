@@ -5,10 +5,10 @@ import { Router, View, NotFoundBoundary } from 'react-navi'
 import Index from './routes/index'
 import { FirebaseProvider } from './services/firebase'
 
-import Layout from './components/layout/layout'
+import Layout from './components/layout'
 import GlobalStyle from './components/global-style/global-style'
 import NotFound from './components/not-found/not-found'
-import Fallback from './components/fallback/fallback'
+import Fallback from './components/fallback'
 
 const routes = mount({
   '/': route({
@@ -21,7 +21,7 @@ const routes = mount({
       }),
     view: <Index />,
   }),
-  '/create': lazy(() => import('./routes/create/create')),
+  '/create': lazy(() => import('./routes/create')),
 })
 
 const App = () => {

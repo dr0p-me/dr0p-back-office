@@ -4,20 +4,6 @@ import { Track, Artist } from '../../../types'
 import ArrayInput from '../array-input'
 import Input from '../input'
 
-const track = [
-  {
-    artists: ["Skrillex & Damian 'Jr Gong' Marley"],
-    name: 'Make it Bun Dem',
-    mashup: [
-      {
-        artists: ['Bommer', 'Crowell'],
-        name: 'Yasuo',
-        mashup: [],
-      },
-    ],
-  },
-]
-
 type TracksState = {
   tracks: Track[]
   currentTitle: string

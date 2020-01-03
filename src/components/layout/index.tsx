@@ -1,26 +1,25 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { useLoadingRoute, Link } from 'react-navi'
+import { useLoadingRoute } from 'react-navi'
 import LoadingIndicator from '../loading-indicator/loading-indicator'
 
+import '../../global.css'
+import Menu from '../menu'
+
 const Wrapper = styled.div`
+  padding: 12px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100vw;
   height: 100vh;
+  font-family: Inter;
+  background-color: #fafbfd;
 `
 
 const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-`
-
-const Menu = styled.div`
-  padding: 24px;
-  > * {
-    padding-right: 12px;
-  }
 `
 
 interface Props {
@@ -33,10 +32,7 @@ const Layout = ({ children }: Props) => {
   return (
     <Wrapper>
       <LoadingIndicator show={!!loadingRoute} />
-      <Menu>
-        <Link href="/">Index</Link>
-        <Link href="/create">Create</Link>
-      </Menu>
+      <Menu />
       <Container>{children}</Container>
     </Wrapper>
   )

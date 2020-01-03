@@ -7,15 +7,15 @@ import { useFirebase } from '../../services/firebase'
 import formMachine from '../../machines/formMachine'
 
 import ArticleForm from '../../components/form/article-form'
-import articles from './../../../mocks/articles.json'
+import Timeline from '../../components/timeline'
+import articles from '../../../mocks/articles.json'
 
 const Container = styled.div`
   flex: 1;
   display: flex;
   align-self: stretch;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  background-color: #e9225e;
   padding: 24px;
 `
 
@@ -38,7 +38,7 @@ const Create = () => {
 
   return (
     <Container>
-      <h1>Create</h1>
+      <Timeline dispatch={sendToMachine} active={formState.value as string} />
       <ArticleForm dispatch={sendToMachine} formContext={formState} save={save} />
     </Container>
   )
@@ -47,6 +47,10 @@ const Create = () => {
 const create = mount({
   '/': route({
     title: 'Create New Post',
+    getData: async () =>
+      new Promise(resolve => {
+        setTimeout(() => resolve({}), 500)
+      }),
     view: <Create />,
   }),
 })

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import calculatePercent from './calculate-percent'
 
@@ -14,7 +14,7 @@ const Bar = styled.div`
   display: none;
   width: 100%;
   height: 4px;
-  background: #913d75;
+  background: #373759;
   border-radius: 0 1px 1px 0;
   transition: width 350ms;
 `
@@ -27,7 +27,7 @@ const Peg = styled.div`
   height: 2px;
   border-radius: 50%;
   opacity: 0.45;
-  box-shadow: #913d75 1px 0 6px 1px;
+  box-shadow: #373759 1px 0 6px 1px;
 `
 
 interface Props {

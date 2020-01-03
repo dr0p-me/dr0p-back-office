@@ -1,6 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
-import { useCurrentRoute, Link } from 'react-navi'
+import { useCurrentRoute } from 'react-navi'
 
 const Index = () => {
   const { data } = useCurrentRoute()
