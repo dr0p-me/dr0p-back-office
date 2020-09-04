@@ -21,7 +21,7 @@
     "@xstate/react": "^0.8.1",
     "firebase": "^7.6.1",
     "navi": "^0.14.0",
-    "react": "^0.0.0-experimental-f42431abe",
+    "react": "^0.14.0",
     "react-dom": "^0.0.0-experimental-f42431abe",
     "react-dropzone": "^10.2.1",
     "react-markdown": "^4.3.0",
